@@ -99,6 +99,9 @@ select json_group_array(datas) from (
 
 avec 
 @set tbprod = 'C:\UwAmp\www\dge_hackaviz2024\data_originales\prod.json'
+
 @set tbconso = 'C:\UwAmp\www\dge_hackaviz2024\data_originales\conso.json'
+
 @set tbratio = 'C:\UwAmp\www\dge_hackaviz2024\data_originales\ratio.json'
+
 @set tbepci = 'C:\UwAmp\www\dge_hackaviz2024\data_originales\epci.geojson'
