@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OGRVRTDataSource>
+    <OGRVRTLayer name="data-ratio">
+        <SrcDataSource relativeToVRT="1">data.xlsx</SrcDataSource>
+        <!--Header=False-->
+        <SrcLayer>ratio</SrcLayer>
+        <Field name="insee" src="insee" type="String"/>
+        <Field name="nom" src="nom" type="String"/>
+        <Field name="nomcourt" src="nomcourt" type="String"/>
+        <Field name="type" src="type" type="String"/>
+        <Field name="forme" src="forme" type="String"/>
+        <Field name="pop" src="pop" type="Integer"/>
+        <Field name="nbcom" src="nbcom" type="Integer"/>
+        <Field name="lat" src="lat" type="Real"/>
+        <Field name="lon" src="lon" type="Real"/>
+        <Field name="an" src="an" type="Integer"/>
+        <Field name="ratioenr" src="ratioenr" type="Real"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>
