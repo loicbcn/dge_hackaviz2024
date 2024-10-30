@@ -21,6 +21,7 @@ ORDER BY an
 
 Aller de la production détaillée, en passant par les vecteurs (Electricité, Chaleur, Carburant ou combustible), puis les formes d'EPCI (Urbain, rural périurbain, rural autonome) vers les consos par catégories (Electricité, Bois-énergie (EnR), Autres énergies renouvelables (EnR), Chaleur et froid issus de réseau).
 
+
 ```mermaid
 flowchart LR
     subgraph Prod
@@ -47,12 +48,11 @@ flowchart LR
     A-->B-->C
     end
     subgraph Conso
-        direction LR
-        D[" Electricité, Bois-énergie(EnR)
+    direction LR
+    D[" Electricité, Bois-énergie(EnR)
             Autres énergies renouvelables(EnR)
-            Chaleur et froid issus de réseau"
-            ]
-        C-->D
+            Chaleur et froid issus de réseau"]
+    C-->D
     end
 ```
 
