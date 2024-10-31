@@ -6,12 +6,54 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/sankey.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <style>
+        body { font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", "Luxi Sans", sans-serif; }
+        #cont_graph_prod_conso {
+            position: relative;
+        }
+        #prodmarker{ 
+            position: absolute;
+            top:0; right: 33%; bottom:0; left:0;
+            background-color: rgba(243, 242, 238,1); 
+            border-right: 3px dashed #000;
+        }
+        #consomarker{ 
+            position: absolute;
+            top:0; right: 0; bottom:0; left:67%;
+            background-color: rgba(243, 242, 238, 0.2); 
+        }    
+        .info { position: absolute; __ont-family: Consolas,monaco,monospace; display:flex; align-items:center; font-size: 1rem; }
+        .info.top { top:0; margin-top:-10px; }
+        .info.bottom { bottom:0; margin-bottom:-10px; }
+        .info.right { right:0; }
+        .info.left { left:0; }
+        .cote { font-size:40px; }
+    </style>
 </head>
 <body>
-    <div id="container" style="height:600px;"></div>
-    <script src="js/datas.js"></script>
+    <div id="cont_graph_prod_conso">
+        <div id="prodmarker">
+            <div class="info top right">
+                <span class="cote">⇜</span><span>&nbsp;Production&nbsp;</span><span class="cote">⇝</span>
+            </div>
+            <div class="info bottom right">
+                <span class="cote">⇜</span><span>&nbsp;Production&nbsp;</span><span class="cote">⇝</span>
+            </div>
+        </div>
+        <div id="consomarker">
+            <div class="info top left">
+                <span class="cote">⇜</span><span>&nbsp;Consommation&nbsp;</span><span class="cote">⇝</span>
+            </div>
+            <div class="info bottom left">
+                <span class="cote">⇜</span><span>&nbsp;Consommation&nbsp;</span><span class="cote">⇝</span>
+            </div>
+        </div>
+        <div id="graph_prod_conso" style="height:600px;"></div>
+    </div>
+    <script src="js/datas.js?1"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="js/script.js"></script>
 </body>

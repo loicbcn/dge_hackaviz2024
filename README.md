@@ -60,24 +60,25 @@ flowchart LR
 
 ```sql
 select json_group_array(datas) from (
+	SELECT * FROM (
 	-- Prod - detail -> vecteur
-	select json_group_array({'from': detail,'to': vecteur,'weight': round(prod, 2), 'typ': 'prod_1'}) as datas from(
+	select json_group_array({'from': detail,'to': vecteur,'weight': round(prod, 2), 'typ': 'prod_1'}) as datas, 1 AS ord from(
 		select detail, vecteur, sum(prod) prod 
 		from ${tbprod}
 		group by vecteur, detail
-		order by vecteur, detail
+		order by sum(prod) DESC, vecteur, detail
 	) a
 	UNION
 	-- Prod - vecteur --> forme
-	select json_group_array({'from': vecteur,'to': forme,'weight': round(prod, 2), 'typ': 'prod_2'}) as datas from(
+	select json_group_array({'from': vecteur,'to': forme,'weight': round(prod, 2), 'typ': 'prod_2'}) as datas, 2 AS ord from(
 		select vecteur, forme, sum(prod) prod 
 		from ${tbprod}
 		group by forme, vecteur
-		order by forme, vecteur
+		order by sum(prod) DESC, forme, vecteur
 	) b
 	UNION
 	-- Conso - forme --> categorie avec ratio
-	select json_group_array({'from': forme,'to': categorie,'weight': round(conso, 2), 'typ': 'conso_1'}) as datas from(
+	select json_group_array({'from': forme,'to': categorie,'weight': round(conso, 2), 'typ': 'conso_1'}) as datas, 3 AS ord from(
 		with conso_ratio as (
 			select c.*, r.ratioenr
 			from ${tbconso} c 
@@ -94,6 +95,7 @@ select json_group_array(datas) from (
 		group by forme, categorie
 		order by forme, categorie
 	) c
+	) ORDER BY ord
 ) tout
 ```
 
