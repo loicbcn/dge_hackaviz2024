@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Titre de la page</title>
+    <title>Concours de visualisation DATA Grand Est 2024</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/sketchy/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/sankey.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -10,7 +11,6 @@
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <style>
-        body { font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", "Luxi Sans", sans-serif; }
         #cont_graph_prod_conso {
             position: relative;
         }
@@ -34,25 +34,54 @@
     </style>
 </head>
 <body>
+<div class="container">
+    <h4>Production et consommation d'énergies renouvelables (EnR)<br>de 2019 à 2022 dans les EPCI de la région Grand-Est</h4>
+    <h5>Selon le degré d'urbanisation (urbain, rural périurbain et rural autonome)</h5>
     <div id="cont_graph_prod_conso">
         <div id="prodmarker">
             <div class="info top right">
-                <span class="cote">⇜</span><span>&nbsp;Production&nbsp;</span><span class="cote">⇝</span>
+                <span class="cote">⇜</span><span>&nbsp;Production EnR&nbsp;</span><span class="cote">⇝</span>
             </div>
             <div class="info bottom right">
-                <span class="cote">⇜</span><span>&nbsp;Production&nbsp;</span><span class="cote">⇝</span>
+                <span class="cote">⇜</span><span>&nbsp;Production EnR&nbsp;</span><span class="cote">⇝</span>
             </div>
         </div>
         <div id="consomarker">
-            <div class="info top left">
-                <span class="cote">⇜</span><span>&nbsp;Consommation&nbsp;</span><span class="cote">⇝</span>
+            <div class="info top left  mb-5">
+                <span class="cote">⇜</span><span>&nbsp;Consommation EnR&nbsp;</span><span class="cote">⇝</span>
             </div>
             <div class="info bottom left">
-                <span class="cote">⇜</span><span>&nbsp;Consommation&nbsp;</span><span class="cote">⇝</span>
+                <span class="cote">⇜</span><span>&nbsp;Consommation EnR&nbsp;</span><span class="cote">⇝</span>
             </div>
         </div>
         <div id="graph_prod_conso" style="height:600px;"></div>
+      
+        <!-- <div id="scale_graph_prod_conso">
+            <div id="detail"></div>
+            <div id="vecteur"></div>
+            <div id="forme"></div>
+            <div id="categorie"></div>
+        </div>-->
     </div>
+    <div class="progress-stacked mt-1" style="--bs-progress-height: 20px; border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;">
+        <div class="progress" style="width: 20%; height:20px;">
+          <div class="progress-bar progress-bar-striped bg-info">Production par source</div>
+        </div>
+        <div style="width: 3%"></div>
+        <div class="progress" style="width: 20%; height:20px;">
+          <div class="progress-bar progress-bar-striped bg-info">Production par vecteur</div>
+        </div>
+        <div style="width: 13%"></div>
+        <div class="progress" style="width: 20%; height: 20px">
+          <div class="progress-bar progress-bar-striped bg-info">Prod - conso par Degré urbanisation EPCI</div>
+        </div>
+        <div style="width: 4%"></div>
+        <div class="progress" style="width: 20%; height:20px;">
+            <div class="progress-bar progress-bar-striped bg-info">Consommation par catégorie</div>
+        </div>
+      </div>
+    <hr>
+</div>
     <script src="js/datas.js?1"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="js/script.js"></script>
