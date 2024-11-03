@@ -1,6 +1,19 @@
 $(function(){
 
     let serieprod_conso = [];
+    let total_prod = 0;
+    let total_conso = 0;
+    for (let i in prod_conso) {
+        for (let j in prod_conso[i]) {
+            if ( prod_conso[i][j]['typ'] == 'prod_1' ){
+                total_prod += prod_conso[i][j]['weight'];
+            }
+            if ( prod_conso[i][j]['typ'] == 'conso_1' ){
+                total_conso += prod_conso[i][j]['weight'];
+            }
+        }
+    }
+
     for (let i in prod_conso) {
         for (let j in prod_conso[i]) {
             let from = prod_conso[i][j]['from'];
@@ -35,7 +48,15 @@ $(function(){
                 color = '#e41a1c';
             } 
 
-            serieprod_conso.push([from, to, weight, color]);
+            let percent=0;
+            if ( typ == 'conso_1' ) {
+                percent = Highcharts.numberFormat(weight*100 / total_conso, 2, '.');
+            } else {
+                percent = Highcharts.numberFormat(weight*100 / total_prod, 2, '.');
+            }
+            //if ( percent > 1 ){ 
+            serieprod_conso.push([from, to, weight, color, percent]);
+            //} else console.log(percent);
         }
     }
 
@@ -44,7 +65,8 @@ $(function(){
         chart: {
             backgroundColor: 'transparent',
             margin:0,
-            spacing: [0,0,0,0]
+            spacing: [0,0,0,0],
+            animation: false,
             //inverted: true
         },
     
@@ -55,46 +77,77 @@ $(function(){
         tooltip:{
             useHTML: true,
             formatter: function() {
+                // console.log(this);
                 let tmpl = '';
                 if ( this.point.isNode === true ) { // Noeuds
                     if (this.point.level < 2 ) { // Noeuds prod
-                        tmpl = `<strong>${this.point.name}:</strong><br><br>
-                        Production EnR: <strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.sum)}</strong> GWh`;
+                        const prod_enr = getsumweight(this.point.linksFrom);
+                        const percent_prod = Highcharts.numberFormat(prod_enr*100 / total_prod, 2, '.');
+                        tmpl = `<strong class="fs-5">${this.point.name}:</strong><hr>
+                        <table>
+                        <tr>
+                            <td>Production EnR:</td>
+                            <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_prod}%</strong></td>
+                            <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.sum)}</strong> GWh</td>
+                        </tr>
+                        </table>`;
                         return tmpl;                    
                     } else if( this.point.level == 2 ) {  // noeuds prod / conso
                         const prod_enr = getsumweight(this.point.linksTo);
+                        const percent_prod = Highcharts.numberFormat(prod_enr*100 / total_prod, 2, '.');
                         const conso_enr = getsumweight(this.point.linksFrom);
-                        tmpl = `<strong>${this.point.name}:</strong>
+                        const percent_conso = Highcharts.numberFormat(conso_enr*100 / total_conso, 2, '.');
+                        tmpl = `<strong class="fs-5">${this.point.name}:</strong><hr>
                         <table>
-                        <tr><td>Production EnR:</td><td style="text-align:right"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(prod_enr)}</strong> GWh</td></tr>
-                        <tr><td>Consommation EnR: </td><td style="text-align:right"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(conso_enr)}</strong> GWh</td></tr>
+                        <tr>
+                            <td>Production EnR:</td>
+                            <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_prod}%</strong></td>
+                            <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(prod_enr)}</strong> GWh<br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Consommation EnR:</td>
+                            <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_conso}%</strong></td>
+                            <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(conso_enr)}</strong> GWh</td></tr>
                         </table>
                         `;
                         return tmpl; 
                     } else { // Noeuds conso
-                        tmpl = `<strong>${this.point.name}:</strong><br><br>
-                        Consommation EnR: <strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.sum)}</strong> GWh`;
+                        const conso_enr = getsumweight(this.point.linksTo);
+                        const percent_conso = Highcharts.numberFormat(conso_enr*100 / total_conso, 2, '.');
+                        tmpl = `<strong class="fs-5">${this.point.name}:</strong>
+                        <table>
+                        <tr>
+                            <td>Consommation EnR:</td>
+                            <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_conso}%</strong></td>
+                            <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.sum)}</strong> GWh</td>
+                        </tr>
+                        </table>`;
                         return tmpl;
                     }
                     
                 } else { // Liens entre noeuds
-                    console.log(this);
                     let title = 'Production EnR';
                     if ( this.point.toNode.level == 3 ) {
                         title = 'Consommation EnR';
                     }
-                    tmpl = `${title}<br><strong>${this.point.from} <span style="font-size:2rem; position:relative; top:5px;">⇝</span>
-                    ${this.point.to}:</strong><br>
-                    <div style="text-align:right">
-                        <strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.weight)}</strong>GWh
-                    </div>`;
+                    tmpl = `<strong class="fs-5">${this.point.from} <span style="font-size:2rem; position:relative; top:5px;">⇝</span>
+                    ${this.point.to}:</strong><hr>
+                    <div style="display:flex; justify-content: flex-end;"><table>
+                    <tr>
+                        <td>${title}:</td>
+                        <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${this.point.percent}%</strong></td>
+                        <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.weight)}</strong> GWh</td>
+                    </tr>
+                    </table></div>`;
                     return tmpl;
                 }
             },
         },
     
         series: [{
-            keys: ['from', 'to', 'weight', 'color'],
+            keys: ['from', 'to', 'weight', 'color', 'percent'],
+            animation: false,
             nodes: [
                 {id:'Rural autonome', color:'#4daf4a', width: 40, borderWidth: 2, borderColor: 'black'},
                 {id:'Rural périurbain', color:'#984ea3', width: 40, borderWidth: 2, borderColor: 'black'},
@@ -112,6 +165,7 @@ $(function(){
                 {id:'Chaleur', color:'#fe6a35'},
                 {id:'Electricité', color:'#2caffe'},
                 {id:'Bois-énergie (EnR)', color:'#ba7b3b'},
+                {id:'Autres énergies renouvelables (EnR)', color:'#2fd200'},
             ],
             data: serieprod_conso,
             type: 'sankey',

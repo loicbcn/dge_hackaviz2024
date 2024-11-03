@@ -61,42 +61,43 @@ flowchart LR
 ```sql
 select json_group_array(datas) from (
 	SELECT * FROM (
-	-- Prod - detail -> vecteur
-	select json_group_array({'from': detail,'to': vecteur,'weight': round(prod, 2), 'typ': 'prod_1'}) as datas, 1 AS ord from(
-		select detail, vecteur, sum(prod) prod 
-		from ${tbprod}
-		group by vecteur, detail
-		order by sum(prod) DESC, vecteur, detail
-	) a
-	UNION
-	-- Prod - vecteur --> forme
-	select json_group_array({'from': vecteur,'to': forme,'weight': round(prod, 2), 'typ': 'prod_2'}) as datas, 2 AS ord from(
-		select vecteur, forme, sum(prod) prod 
-		from ${tbprod}
-		group by forme, vecteur
-		order by sum(prod) DESC, forme, vecteur
-	) b
-	UNION
-	-- Conso - forme --> categorie avec ratio
-	select json_group_array({'from': forme,'to': categorie,'weight': round(conso, 2), 'typ': 'conso_1'}) as datas, 3 AS ord from(
-		with conso_ratio as (
-			select c.*, r.ratioenr
-			from ${tbconso} c 
-			inner join ${tbratio} r on r.insee = c.insee and r.forme = c.forme and r.an = c.an
+		select json_group_array({'from': vecteur,'to': detail,'weight': round(prod, 2), 'typ': 'prod_1'}) as datas, 1 AS ord from(
+			select vecteur, detail, sum(prod) prod 
+			from ${tbprod}
+			group by vecteur, detail
+			order by sum(prod) DESC, vecteur, detail
 		)
-		select forme, categorie,
-			sum( case 
-				when categorie IN ('Electricité', 'Chaleur et froid issus de réseau') then (conso*ratioenr/100) 
-				else conso
-				end
-				)/1000 conso --, sum(conso)/1000 consotot
-		from conso_ratio
-		WHERE categorie in('Bois-énergie (EnR)', 'Autres énergies renouvelables (EnR)', 'Electricité', 'Chaleur et froid issus de réseau')
-		group by forme, categorie
-		order by forme, categorie
-	) c
+		UNION
+		select json_group_array({'from': detail,'to': forme, 'weight': round(prod, 2), 'typ': 'prod_2'}) as datas, 2 AS ord from(
+			select detail, forme, sum(prod) prod 
+			from ${tbprod}
+			group by detail, forme
+			order by sum(prod) DESC, detail, forme
+		)
+		UNION
+		select json_group_array({'from': forme,'to': categorie,'weight': round(conso, 2), 'typ': 'conso_1'}) as datas, 3 AS ord from(
+			with conso_ratio as (
+				select c.*, r.ratioenr
+				from ${tbconso} c 
+				inner join ${tbratio} r on r.insee = c.insee and r.forme = c.forme and r.an = c.an
+			)
+			select forme, categorie,
+				sum( case 
+					when categorie IN ('Electricité', 'Chaleur et froid issus de réseau') then (conso*ratioenr/100) 
+					else conso
+					end
+					)/1000 conso --, sum(conso)/1000 consotot
+			from conso_ratio
+			WHERE categorie in('Bois-énergie (EnR)', 'Autres énergies renouvelables (EnR)', 'Electricité', 'Chaleur et froid issus de réseau')
+			group by forme, categorie
+			order by sum( case 
+					when categorie IN ('Electricité', 'Chaleur et froid issus de réseau') then (conso*ratioenr/100) 
+					else conso
+					end
+					) desc, forme, categorie
+		)
 	) ORDER BY ord
-) tout
+)
 ```
 
 avec 
