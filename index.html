@@ -35,35 +35,65 @@
 </head>
 <body>
 <div class="container">
-    <h4>Production et consommation d'énergies renouvelables (EnR)<br>de 2019 à 2022 dans les EPCI de la région Grand-Est</h4>
-    <h5>Selon le degré d'urbanisation (urbain, rural périurbain et rural autonome)</h5>
-    <div id="cont_graph_prod_conso">
-        <div id="prodmarker">
-            <div class="info top right">
-                <span class="cote">⇜</span><span>&nbsp;Production EnR&nbsp;</span><span class="cote">⇝</span>
-            </div>
-            <div class="info bottom right">
-                <span class="cote">⇜</span><span>&nbsp;Production EnR&nbsp;</span><span class="cote">⇝</span>
-            </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="fs-4 my-3">Production d'énergies renouvelables (EnR) et consommation d'énergies de 2019 à 2022 dans les EPCI de la région Grand-Est</div>
+            <div class="fs-5">Selon le degré d'urbanisation (urbain, rural périurbain et rural autonome)</div>
         </div>
-        <div id="consomarker">
-            <div class="info top left  mb-5">
-                <span class="cote">⇜</span><span>&nbsp;Consommation EnR&nbsp;</span><span class="cote">⇝</span>
-            </div>
-            <div class="info bottom left">
-                <span class="cote">⇜</span><span>&nbsp;Consommation EnR&nbsp;</span><span class="cote">⇝</span>
-            </div>
-        </div>
-        <div id="graph_prod_conso" style="height:800px;"></div>
-      
-        <!-- <div id="scale_graph_prod_conso">
-            <div id="detail"></div>
-            <div id="vecteur"></div>
-            <div id="forme"></div>
-            <div id="categorie"></div>
-        </div>-->
     </div>
-
+    <div class="row">
+        <div class="col-md-8">
+            <div id="cont_graph_prod_conso">
+                <div id="prodmarker">
+                    <div class="info top right">
+                        <span class="cote">⇜</span><span>&nbsp;Production EnR&nbsp;</span><span class="cote">⇝</span>
+                    </div>
+                    <div class="info bottom right">
+                        <span class="cote">⇜</span><span>&nbsp;Production EnR&nbsp;</span><span class="cote">⇝</span>
+                    </div>
+                </div>
+                <div id="consomarker">
+                    <div class="info top left  mb-5">
+                        <span class="cote">⇜</span><span>&nbsp;Consommation énegie&nbsp;</span><span class="cote">⇝</span>
+                    </div>
+                    <div class="info bottom left">
+                        <span class="cote">⇜</span><span>&nbsp;Consommation énegie&nbsp;</span><span class="cote">⇝</span>
+                    </div>
+                </div>
+                <div id="graph_prod_conso" style="height:700px;"></div>
+                <!-- <div id="scale_graph_prod_conso">
+                    <div id="detail"></div>
+                    <div id="vecteur"></div>
+                    <div id="forme"></div>
+                    <div id="categorie"></div>
+                </div>-->
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-info mt-2">
+                <p>Le graphique ci-contre présente la production d'EnR et la consommation d'energies, en GWh, sur 4 ans de la région Grand-est décomposées en flux.</p>
+                <p>En survolant avec la souris les éléments du graphique, une infobulle précise la quantité d'énergie produite ou consommée et le pourcentage 
+                    d'énergie de l'élément par rapport aux éléments de la même colonne.
+                </p>
+                <p class="mb-0">Par exemple, les produits pétroliers représentent 32.41% de l'énergie consommée.
+                </p>
+            </div>
+            <div class="alert alert-warning mt-2">
+                <p>
+                Alors que les consommations d'énergie selon le degré d'urbanisation sont en accord avec la répartition de la <strong>population</strong> 
+                (les zones urbaines, qui repésentent <span class="badge bg-warning text-black">68%</span> de la population consomment 
+                <span class="badge bg-warning text-black">64%</span> de l'énergie), la production d'EnR ne suit pas cette symétrie:<br>
+                En effet, <span class="badge bg-warning text-black">34%</span> des EnR sont produites dans les zones rurales 
+                ( <span class="badge bg-warning text-black">15%</span> de la population) et 
+                <span class="badge bg-warning text-black">27%</span> sont produites dans les zones rulales périurbaines 
+                ( <span class="badge bg-warning text-black">17%</span> de la population).
+                </p>
+                <p class="mb-0">Ce déséquilibre est sans aucun doute dû à l'espace nécessaire à la mise en œuvre d'unités de production, mais il pose 
+                    la question du <strong>transport</strong> des énergies produites vers leurs lieux de consommation.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
 

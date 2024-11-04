@@ -38,7 +38,7 @@ $(function(){
 
             // couleurs
             let color = null;
-            if ( to == 'Rural autonome' ) {
+            /*if ( to == 'Rural autonome' ) {
                 color = '#4daf4a';
             }
             if ( to == 'Rural périurbain' ) {
@@ -46,7 +46,7 @@ $(function(){
             } 
             if ( to == 'Urbain' ) {
                 color = '#e41a1c';
-            } 
+            } */
 
             let percent=0;
             if ( typ == 'conso_1' ) {
@@ -64,17 +64,22 @@ $(function(){
 
         chart: {
             backgroundColor: 'transparent',
-            margin:0,
+            margin:[40,0,10,0],
             spacing: [0,0,0,0],
             animation: false,
             //inverted: true
         },
-    
+        credits: {
+            enabled: false
+        },
         title: {
             text: undefined
         },
 
         tooltip:{
+            positioner: function () {
+                return { x: 5, y: 5 };
+            },
             useHTML: true,
             formatter: function() {
                 // console.log(this);
@@ -83,61 +88,61 @@ $(function(){
                     if (this.point.level < 2 ) { // Noeuds prod
                         const prod_enr = getsumweight(this.point.linksFrom);
                         const percent_prod = Highcharts.numberFormat(prod_enr*100 / total_prod, 2, '.');
-                        tmpl = `<strong class="fs-5">${this.point.name}:</strong><hr>
+                        tmpl = `<div class="mt-1"><strong class="fs-6">${this.point.name}:</strong><hr class="my-1">
                         <table>
                         <tr>
                             <td>Production EnR:</td>
                             <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_prod}%</strong></td>
-                            <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.sum)}</strong> GWh</td>
+                            <td class="text-end ps-3"><strong class="fs-6">${Highcharts.numberFormat(this.point.sum)}</strong> GWh</td>
                         </tr>
-                        </table>`;
+                        </table></div>`;
                         return tmpl;                    
                     } else if( this.point.level == 2 ) {  // noeuds prod / conso
                         const prod_enr = getsumweight(this.point.linksTo);
                         const percent_prod = Highcharts.numberFormat(prod_enr*100 / total_prod, 2, '.');
                         const conso_enr = getsumweight(this.point.linksFrom);
                         const percent_conso = Highcharts.numberFormat(conso_enr*100 / total_conso, 2, '.');
-                        tmpl = `<strong class="fs-5">${this.point.name}:</strong><hr>
+                        tmpl = `<div class="mt-1"><strong class="fs-6">${this.point.name}:</strong><hr class="my-1">
                         <table>
                         <tr>
                             <td>Production EnR:</td>
-                            <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_prod}%</strong></td>
-                            <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(prod_enr)}</strong> GWh<br>
+                            <td class="text-end ps-2"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_prod}%</strong></td>
+                            <td class="text-end ps-2"><strong class="fs-6">${Highcharts.numberFormat(prod_enr)}</strong> GWh<br>
                             </td>
                         </tr>
                         <tr>
-                            <td>Consommation EnR:</td>
-                            <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_conso}%</strong></td>
-                            <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(conso_enr)}</strong> GWh</td></tr>
-                        </table>
+                            <td>Consommation:</td>
+                            <td class="text-end ps-2"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_conso}%</strong></td>
+                            <td class="text-end ps-2"><strong class="fs-6">${Highcharts.numberFormat(conso_enr)}</strong> GWh</td></tr>
+                        </table></div>
                         `;
                         return tmpl; 
                     } else { // Noeuds conso
                         const conso_enr = getsumweight(this.point.linksTo);
                         const percent_conso = Highcharts.numberFormat(conso_enr*100 / total_conso, 2, '.');
-                        tmpl = `<strong class="fs-5">${this.point.name}:</strong>
+                        tmpl = `<div class="mt-1"><strong class="fs-6">${this.point.name}:</strong><hr class="my-1">
                         <table>
                         <tr>
-                            <td>Consommation EnR:</td>
-                            <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_conso}%</strong></td>
-                            <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.sum)}</strong> GWh</td>
+                            <td>Consommation:</td>
+                            <td class="text-end ps-2"><strong class="badge fs-6" style="background-color:${this.point.color}">${percent_conso}%</strong></td>
+                            <td class="text-end ps-2"><strong class="fs-6">${Highcharts.numberFormat(this.point.sum)}</strong> GWh</td>
                         </tr>
-                        </table>`;
+                        </table></div>`;
                         return tmpl;
                     }
                     
                 } else { // Liens entre noeuds
                     let title = 'Production EnR';
                     if ( this.point.toNode.level == 3 ) {
-                        title = 'Consommation EnR';
+                        title = 'Consommation';
                     }
-                    tmpl = `<strong class="fs-5">${this.point.from} <span style="font-size:2rem; position:relative; top:5px;">⇝</span>
+                    tmpl = `<strong class="fs-6">${this.point.from}<span style="font-size:1.4rem; position:relative; top:2px;">⇝</span>
                     ${this.point.to}:</strong><hr>
                     <div style="display:flex; justify-content: flex-end;"><table>
                     <tr>
                         <td>${title}:</td>
                         <td class="text-end ps-3"><strong class="badge fs-6" style="background-color:${this.point.color}">${this.point.percent}%</strong></td>
-                        <td class="text-end ps-3"><strong style="font-size:1.8rem;">${Highcharts.numberFormat(this.point.weight)}</strong> GWh</td>
+                        <td class="text-end ps-3"><strong class="fs-6">${Highcharts.numberFormat(this.point.weight)}</strong> GWh</td>
                     </tr>
                     </table></div>`;
                     return tmpl;
@@ -147,6 +152,7 @@ $(function(){
     
         series: [{
             keys: ['from', 'to', 'weight', 'color', 'percent'],
+            nodePadding:30,
             animation: false,
             nodes: [
                 {id:'Rural autonome', color:'#4daf4a', width: 40, borderWidth: 2, borderColor: 'black'},
@@ -166,10 +172,12 @@ $(function(){
                 {id:'Electricité', color:'#2caffe'},
                 {id:'Bois-énergie (EnR)', color:'#ba7b3b'},
                 {id:'Autres énergies renouvelables (EnR)', color:'#2fd200'},
+                {id:'Produits pétroliers', color:'#0f1b23'},
+                {id:'Gaz Naturel', color:'#94f7f7'}
             ],
             data: serieprod_conso,
             type: 'sankey',
-            name: 'Production et consommation d\'ENR par forme d\'EPCI'
+            name: 'Production d\'ENR et consommation d\'énergie par forme d\'EPCI'
         }]
     
     });
