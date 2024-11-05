@@ -100,6 +100,46 @@ select json_group_array(datas) from (
 )
 ```
 
+#### Evolutions prod, conso et ratio sur 4 ans, par degré d'urbanisation
+
+Ratio pondéré par la population
+
+```sql
+SELECT json_group_object(k,d)  FROM (
+
+		SELECT json_group_array({'an': an, 'forme': forme, 'ratio': round(ratio, 2)}) AS d, 'ratio' k FROM (
+			SELECT an, forme, sum(pop*ratioenr)/sum(pop) ratio, avg(ratioenr) 
+			FROM ${tbratio}
+			GROUP BY an, forme 
+			ORDER BY an, forme
+		)
+
+	UNION
+
+		SELECT json_group_array({'an': an, 'forme': forme, 'prod': round(prod, 2)}) AS d, 'prod' k FROM (
+			SELECT an, forme, sum(prod) prod
+			FROM ${tbprod}
+			GROUP BY an, forme 
+			ORDER BY an, forme
+		)
+
+	UNION
+
+		SELECT json_group_array({'an': an, 'forme': forme, 'conso': round(conso/1000,2)}) AS d, 'conso' k FROM(
+			SELECT an, forme, sum(conso)/1000 conso
+			FROM ${tbconso}
+			GROUP BY an, forme 
+			ORDER BY an, forme
+		)
+
+)
+```
+
+$
+\cfrac{\sum(pop × ratio)}{\sum(pop)}
+$
+
+
 avec 
 @set tbprod = 'C:\UwAmp\www\dge_hackaviz2024\data_originales\prod.json'
 
@@ -108,3 +148,5 @@ avec
 @set tbratio = 'C:\UwAmp\www\dge_hackaviz2024\data_originales\ratio.json'
 
 @set tbepci = 'C:\UwAmp\www\dge_hackaviz2024\data_originales\epci.geojson'
+
+
