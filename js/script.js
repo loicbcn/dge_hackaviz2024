@@ -1,4 +1,24 @@
-$(function(){
+let chart_evo;
+let graph_prod_conso;
+let chart_evo_init_w = 0;
+let graph_prod_conso_init_w = 0;
+$(function() {
+
+    window.addEventListener("beforeprint", (event) => {
+        chart_evo_init_w = $('#chart_evo').width();
+        graph_prod_conso_init_w = $('#graph_prod_conso').width();
+        $('#graph_prod_conso').width('750px');
+        $('#chart_evo').width('750px');
+        chart_evo.reflow(); 
+        graph_prod_conso.reflow();
+    });
+    window.addEventListener("afterprint", (event) => {
+        $('#chart_evo').width(chart_evo_init_w);
+        $('#graph_prod_conso').width(graph_prod_conso_init_w);
+        chart_evo.reflow(); 
+        graph_prod_conso.reflow();
+    });
+
     // evo_prod_conso_ratio
     const categories = [2019,2020,2021,2022];
 
@@ -99,15 +119,32 @@ $(function(){
         }
     }
 
-
-
-    Highcharts.chart('chart_evo', {
+    chart_evo = Highcharts.chart('chart_evo', {
         chart: {
             type: 'column',
-            alignThresholds: true
+            alignThresholds: true,
+            height: 400,
+            animation: false
         },
         title: {
             text: undefined
+        },
+        responsive: {
+            rules: [{
+              condition: {
+                maxWidth: 700
+              },
+              chartOptions: {
+                chart:{
+                    height: 900,
+                },
+                legend: {
+                    layout: 'horizontal',
+                    verticalAlign: 'top',
+                    align: 'center'
+                }
+              }
+            }]
         },
         xAxis: {
             categories: categories
@@ -161,15 +198,17 @@ $(function(){
             }
         ],
         legend: {
-            layout: 'vertical',
-            verticalAlign: 'middle',
-            align: 'right'
+            layout: 'horizontal',
+            verticalAlign: 'bottom',
+            align: 'left',
+            itemStyle:{fontSize:'12px'}
+
         },
         credits: {
             enabled: false
         },
         tooltip: {
-            formatter: function() { console.log(this); 
+            formatter: function() { 
                 if ( this.point.series.name.indexOf('Ratio EnR') > -1 ) {
                     return this.point.series.name + ' ' + this.key  + ': <strong class="badge fs-6" style="background-color:' + this.color + '">' + this.y + ' %</strong>';
                 } else {
@@ -184,6 +223,9 @@ $(function(){
             }, 
             column: {
                 stacking: 'normal'
+            },
+            series: {
+                animation: false
             }
         },
         series: series
@@ -254,7 +296,7 @@ $(function(){
         }
     }
 
-    Highcharts.chart('graph_prod_conso', {
+    graph_prod_conso = Highcharts.chart('graph_prod_conso', {
 
         chart: {
             backgroundColor: 'transparent',
