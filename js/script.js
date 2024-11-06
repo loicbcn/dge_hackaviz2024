@@ -1,5 +1,199 @@
 $(function(){
+    // evo_prod_conso_ratio
+    const categories = [2019,2020,2021,2022];
 
+    const series = [
+        {
+            name : 'Urbain - Production',
+            data: [],
+            stack: 'Urbain',
+            color:'rgba(228, 26, 28, 1)',
+        }, {
+            name : 'Urbain - Consommation',
+            data: [],
+            stack: 'Urbain',
+            color:'rgba(228, 26, 28, 0.5)'
+        }, {
+            name : 'Rural périurbain - Production',
+            data: [],
+            stack : 'Rural périurbain',
+            color: 'rgba(152, 78, 163, 1)'
+        }, {
+            name : 'Rural périurbain - Consommation',
+            data: [],
+            stack : 'Rural périurbain',
+            color: 'rgba(152, 78, 163, 0.5)'
+        }, {
+            name : 'Rural autonome - Production',
+            data: [],
+            stack : 'Rural autonome',
+            color:'rgba(77, 175, 74, 1)'
+        }, {
+            name : 'Rural autonome - Consommation',
+            data: [],
+            stack : 'Rural autonome',
+            color:'rgba(77, 175, 74, 0.5)'
+        }, {
+            name : 'Ratio EnR - Urbain',
+            type: 'line',
+            //step: 'center',
+            data: [],
+            color:'rgba(228, 26, 28, 1)'
+        }, {
+            name : 'Ratio EnR - Rural périurbain',
+            data: [],
+            type: 'line',
+            //step: 'center',
+            color:'rgba(152, 78, 163, 1)'
+        }, {
+            name : 'Ratio EnR - Rural autonome',
+            data: [],
+            type: 'line',
+            //step: 'center',
+            color:'rgba(77, 175, 74, 1)'
+        }, 
+    ];
+
+    let current;
+
+    for ( let i in evo_prod_conso_ratio['prod']) {
+        current = evo_prod_conso_ratio['prod'][i];
+        for ( let s in series ) {
+            if ( series[s]['stack'] == current['forme'] && series[s]['name'].indexOf('Production') > -1) {
+                series[s]['data'].push(current['prod']);
+                series[s]['threshold'] = 0;
+                series[s]['yAxis'] = 0;
+            }
+        }
+    } 
+
+    current = null;
+    for ( let i in evo_prod_conso_ratio['conso']) {
+        current = evo_prod_conso_ratio['conso'][i];
+        for ( let s in series ) {
+            if ( series[s]['stack'] == current['forme'] && series[s]['name'].indexOf('Consommation') > -1) {
+                series[s]['data'].push(current['conso']*-1);
+                series[s]['threshold'] = 0;
+                series[s]['yAxis'] = 1;
+            }
+        }
+    }
+
+    current = null;
+    for ( let i in evo_prod_conso_ratio['ratio']) {
+        current = evo_prod_conso_ratio['ratio'][i];
+        for ( let s in series ) {
+            if ( series[s]['name'] == 'Ratio EnR - ' + current['forme'] ) {
+                series[s]['data'].push(current['ratio']);
+                series[s]['threshold'] = 0;
+                series[s]['yAxis'] = 2;
+                series[s]['lineWidth'] = 1;
+                series[s]['shadow'] = true;
+                series[s]['marker'] = {
+                    lineWidth: 2,
+                    lineColor: series[s]['color'],
+                    fillColor: 'white'
+                }
+
+            }
+        }
+    }
+
+
+
+    Highcharts.chart('chart_evo', {
+        chart: {
+            type: 'column',
+            alignThresholds: true
+        },
+        title: {
+            text: undefined
+        },
+        xAxis: {
+            categories: categories
+        },
+        yAxis: [
+            {
+                title: {
+                    text: 'Production (GWh)',
+                    align: 'high'
+                }, 
+                labels: {
+                    formatter: function() {
+                        result = this.value;
+                        if ( result < 0 ) return '';
+                        if (this.value > 1000000) { result = Math.floor(this.value / 1000000) + "M" }
+                        else if (this.value > 1000) { result = Math.floor(this.value / 1000) + "k" }
+                        
+                        return result;
+                    } 
+                }
+            }, {
+                title: {
+                    text: '<i style="color:orange" class="bi bi-exclamation-triangle-fill"></i> Consommation (GWh) <i style="color:orange" class="bi bi-exclamation-triangle-fill"></i>',
+                    useHTML: true,
+                    align: 'low'
+                },  
+                labels: {
+                    formatter: function() {
+                        result = this.value;
+                        if ( result > 0 ) return '';
+                        if (this.value < -1000000) { result = Math.floor(this.value / 1000000)*-1 + "M" }
+                        else if (this.value < -1000) { result = Math.floor(this.value / 1000)*-1 + "k" }
+                        
+                        return result;
+                    } 
+                },
+                opposite: true,
+            }, {
+                title: {
+                    text: 'Ratio EnR (%)',
+                    align: 'high'
+                },
+                labels: {
+                    formatter: function() {
+                        result = this.value;
+                        if ( result < 0 ) return '';
+                        return result + '%';
+                    } 
+                },
+                opposite: true,
+            }
+        ],
+        legend: {
+            layout: 'vertical',
+            verticalAlign: 'middle',
+            align: 'right'
+        },
+        credits: {
+            enabled: false
+        },
+        tooltip: {
+            formatter: function() { console.log(this); 
+                if ( this.point.series.name.indexOf('Ratio EnR') > -1 ) {
+                    return this.point.series.name + ' ' + this.key  + ': <strong class="badge fs-6" style="background-color:' + this.color + '">' + this.y + ' %</strong>';
+                } else {
+                    return this.point.series.name + ' ' + this.key   + ': <strong class="badge fs-6" style="background-color:' + this.color + '">' + Highcharts.numberFormat(Math.abs(this.y), 2, '.') + ' GWh</strong>';
+                }
+            },
+            useHTML: true,
+        },
+        plotOptions: {
+            column: {
+                borderRadius: '25%'
+            }, 
+            column: {
+                stacking: 'normal'
+            }
+        },
+        series: series
+    });
+
+
+});
+
+$(function(){
+    /* graph flux */
     let serieprod_conso = [];
     let total_prod = 0;
     let total_conso = 0;
