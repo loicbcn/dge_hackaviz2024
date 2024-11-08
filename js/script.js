@@ -209,7 +209,8 @@ $(function() {
 
         },
         credits: {
-            enabled: false
+            enabled: true,
+            text:'Source: ATMO Grand Est'
         },
         tooltip: {
             formatter: function() { 
@@ -301,7 +302,12 @@ $(function(){
             //inverted: true
         },
         credits: {
-            enabled: false
+            enabled: true,
+            text:'Source: ATMO Grand Est',
+            position: {
+                align:'left',
+                x:10
+            }
         },
         title: {
             text: undefined
@@ -465,7 +471,8 @@ $(function(){
             }
         },
         credits: {
-            enabled: false
+            enabled: true,
+            text:'Source: ATMO Grand Est',
         },
         title: {
             text: undefined,
@@ -562,7 +569,8 @@ $(function(){
             }
         },
         credits: {
-            enabled: false
+            enabled: true,
+            text:'Source: ATMO Grand Est',
         },
         title: {
             text: undefined,
