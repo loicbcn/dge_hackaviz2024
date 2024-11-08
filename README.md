@@ -139,6 +139,37 @@ $
 \cfrac{\sum(pop × ratio)}{\sum(pop)}
 $
 
+```sql
+-- scatter plot
+load spatial;
+WITH ratio_2022 as(
+		SELECT insee, forme, ratioenr
+		FROM ${tbratio}
+		WHERE an = 2022
+		ORDER BY insee
+	), prod_2022 as(
+		SELECT insee, max(forme) forme, round(sum(prod), 2) prod
+		FROM ${tbprod}
+		WHERE an = 2022
+		GROUP BY insee
+		ORDER BY prod desc
+	), conso_2022 as(
+		SELECT insee, max(forme) forme, round(sum(conso)/1000, 2) conso
+		FROM ${tbconso}
+		WHERE an = 2022
+		GROUP BY insee
+		ORDER BY conso desc
+	)
+select json_group_array({'siren_epci': siren_epci, 'forme': forme, 'pmun_epci': pmun_epci, 'ratioenr': ratioenr}) from (
+	SELECT e.*  exclude(ptot_epci), p.forme forme, p.prod, c.conso, r.ratioenr
+	FROM st_read(${tbepci}) e
+	INNER JOIN prod_2022 p ON p.insee = e.siren_epci
+	INNER JOIN conso_2022 c ON c.insee = e.siren_epci
+	INNER JOIN ratio_2022 r ON r.insee = e.siren_epci
+	order by RATIOENR desc
+)
+```
+
 
 avec 
 @set tbprod = 'C:\UwAmp\www\dge_hackaviz2024\data_originales\prod.json'
