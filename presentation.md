@@ -16,6 +16,7 @@ table.sddt31[empty-cells],table.sddt31[border="0"],table.sddt31[border="0"] > tr
 <div id="container">
 
 ### Présentation
+
 <div style ="display:flex; justify-content: space-around; align-items:center;">
 
 <div class="signature_ddt31" style='margin:0; padding:0; font-size:14px; font-family: Marianne !important, Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif; color:#000000;'>
@@ -66,7 +67,9 @@ table.sddt31[empty-cells],table.sddt31[border="0"],table.sddt31[border="0"] > tr
 </div>
 
 ### Visualisation 
+
 **#1** 
+
 Il s'agit d'une page web composée de 3 représentations graphiques commentées.
 Le degré d'urbanisation des EPCI (attribut `forme`) est mis en avant dans chacun des graphiques.
 
